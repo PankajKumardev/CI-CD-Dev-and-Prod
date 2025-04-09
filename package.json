@@ -1,5 +1,5 @@
 {
-  "name": "bms",
+  "name": "Bms",
   "private": true,
   "scripts": {
     "build": "turbo run build",
