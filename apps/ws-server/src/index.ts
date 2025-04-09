@@ -1,16 +1,16 @@
-import { WebSocketServer } from 'ws';
-import { client } from '@repo/db/client';
+import { WebSocketServer } from "ws";
+import { prismaClient } from "@repo/db/client"
 
-const server = new WebSocketServer({
-  port: 3001,
+const wss = new WebSocketServer({
+    port: 8080
 });
 
-server.on('connection', async (socket) => {
-  const user = await client.user.create({
-    data: {
-      username: Math.random().toString(36).substring(2, 15),
-      password: Math.random().toString(36).substring(2, 15),
-    },
-  });
-  socket.send('Hi, you are connected to the server!');
-});
+wss.on("connection", async (socket) => {
+    const user = await prismaClient.users.create({
+        data: {
+            username: Math.random().toString(),
+            password: Math.random().toString()
+        }
+    })
+    socket.send("hi there you are connected to the server")
+})
