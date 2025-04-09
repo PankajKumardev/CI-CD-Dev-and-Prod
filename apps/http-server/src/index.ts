@@ -30,6 +30,6 @@ app.post("/signup", async(req, res) => {
 
 
 app.listen(3002, () => {
-    console.log("server listening on the port 3000");
+    console.log("server listening on the port 3002");
 
 })
