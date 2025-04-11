@@ -1,0 +1,22 @@
+name: Deploy to staging
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  redeploy_everything:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Redeploy everything via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd CI-CD-Dev-and-Prod/ || exit
+            git pull origin main
+            pnpm install
+            pnpm build
+            pm2 restart all
