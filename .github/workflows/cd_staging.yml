@@ -15,6 +15,8 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            export PATH="$HOME/.npm-global/bin:$PATH"
+            export PATH="$HOME/.nvm/versions/node/v18.16.0/bin:$PATH"
             cd CI-CD-Dev-and-Prod/ || exit
             git pull origin main
             pnpm install
