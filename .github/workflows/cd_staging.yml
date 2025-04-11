@@ -35,3 +35,5 @@ jobs:
             pm2 restart http-server
             pm2 restart fe-server
             pm2 restart ws-server
+            pm2 logs --raw --lines 1000 --follow http-server fe-server ws-server
+            pm2 save
