@@ -15,8 +15,19 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            export PATH="$HOME/.npm-global/bin:$PATH"
-            export PATH="$HOME/.nvm/versions/node/v18.16.0/bin:$PATH"
+            # Source nvm
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+            # Use desired node version if needed (optional)
+            nvm use 22 || echo "Node 22 not found or not required"
+
+            # Show current path and node binaries for debug
+            echo "PATH: $PATH"
+            which node
+            which pnpm
+            which pm2
+
             cd CI-CD-Dev-and-Prod/ || exit
             git pull origin main
             pnpm install
