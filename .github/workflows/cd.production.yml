@@ -1,0 +1,39 @@
+name: Deploy to production
+
+on:
+  push:
+    branches: [production]
+
+jobs:
+  redeploy_everything:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Redeploy everything via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_SSH_HOST }}
+          username: ${{ secrets.PROD_SSH_USERNAME }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            # Source nvm
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+
+            # Use desired node version if needed (optional)
+            nvm use 22 || echo "Node 22 not found or not required"
+
+            # Show current path and node binaries for debug
+            echo "PATH: $PATH"
+            which node
+            which pnpm
+            which pm2
+
+            cd CI-CD-Dev-and-Prod/ || exit
+            git pull origin main
+            pnpm install
+            pnpm build
+            pm2 restart http-server
+            pm2 restart fe-server
+            pm2 restart ws-server
+            pm2 logs --raw --lines 1000 --follow http-server fe-server ws-server
+            pm2 save
